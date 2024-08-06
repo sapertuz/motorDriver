@@ -1,0 +1,53 @@
+\documentclass[multi=my,crop]{standalone}
+\usepackage{tikz}
+\usepackage{ifthen}
+
+\newcommand{\drawRegisterBits}[3]{ 
+    \begin{tikzpicture}[scale=0.8]
+        \draw (0.5,0) rectangle (#1/2+0.5,1);
+        \def\yoffset{3.0}
+        \foreach \bitnum/\label [count=\index] in {#2} {
+            % Check if index is even or odd
+            \ifthenelse{\equal{#3}{1}}{% if #3 is 1
+              \ifodd\index
+                \def\yoffset{3.0}
+              \else
+                \def\yoffset{2.0}
+              \fi
+            }{}
+            \draw (#1/2 - \bitnum/2,0) -- (#1/2 - \bitnum/2,1) node[anchor=west, yshift=-0.4cm] {\small \bitnum};
+            \draw[<-] (#1/2 - \bitnum/2 +0.25, 1.5) -- (#1/2 - \bitnum/2 +0.25, \yoffset);
+            \node at (#1/2 - \bitnum/2 +0.25, \yoffset+.5) {\label};
+        }
+        \node at (#1/2,0.5) [anchor=west] {\small 0};
+    \end{tikzpicture}
+}
+
+\begin{document}
+
+% Control Register (CR)
+\begin{my}
+  \drawRegisterBits{32}{0/MTS, 31/Reserved}{0}  
+\end{my}
+
+% Status Register (SR)
+\begin{my}
+  \drawRegisterBits{32}{0/aB, 1/mB, 31/Reserved}{1}
+\end{my}
+
+% PWM_A Register
+\begin{my}
+  \drawRegisterBits{32}{7/M0, 15/M1, 23/M2, 31/M3}{0}
+\end{my}
+
+% PWM_B Register
+\begin{my}
+  \drawRegisterBits{32}{7/M4, 15/M5, 23/M6, 31/M7}{0}
+\end{my}
+
+% Direction Register (DIR)
+\begin{my}
+  \drawRegisterBits{32}{0/M0, 1/M1, 2/M2, 3/M3, 4/M4, 5/M5, 6/M6, 7/M7, 31/Reserved}{1}
+\end{my}
+
+\end{document}
